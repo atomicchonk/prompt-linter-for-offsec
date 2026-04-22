@@ -1,5 +1,7 @@
 # Prompt Hardening for Offensive Workflows
 
+<img src="assets/logo.png" align="right" width="140" style="margin-left: 16px;">
+
 A Codex Skill that rewrites rough AI prompts used in authorized offensive security workflows to reduce hallucination, constrain assumptions, and keep outputs grounded in observed evidence.
 
 ---
