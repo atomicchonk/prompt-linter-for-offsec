@@ -1,21 +1,33 @@
 # Example 3
-
 ## Original Prompt
-Does this look exploitable?
+
+What do these validation results mean?
+
+## Detected Phase
+
+### Analysis
 
 ## Hardened Prompt
-Assess whether the evidence below supports a credible security concern.
 
-Do not assume exploitability from patterns alone.
+```
+Objective: Derive the narrowest evidence-supported conclusions from provided validation results.
 
-Identify:
-1. Observed behavior
-2. Conditions required for exploitation
-3. Minimal validation steps
+Use only provided validation steps and results. Do not propose new tests, discover new surface, infer business context, or claim severity or impact. Preserve original check id ordering. "Observed" must contain only direct provided results. In "Interpretation", "supported conclusion" must be the narrowest justified claim, "alternate explanation" must be plausible and evidence-consistent, and "unknown" must name the specific missing fact blocking a stronger conclusion. Do not introduce information not present in Observed. Return exactly:
 
-Clearly state uncertainty and missing evidence.
+Endpoint:
+host | method | path | evidence
 
-## What Changed
-- removed binary framing
-- introduced evidence thresholding
-- emphasized validation over opinion
+Observed:
+check id | request | auth | result | evidence
+
+Interpretation:
+supported conclusion | alternate explanation | unknown
+
+Confidence:
+one of: low | medium | high
+
+Recommended Follow-Up:
+one of: stop | repeat same check | compare unauth/auth | compare user contexts | broaden input variation | collect more evidence
+
+Do not deviate from this schema.
+```
