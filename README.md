@@ -13,7 +13,7 @@
 
 
 
-A minimal Codex skill that rewrites vague prompts into **deterministic, phase-correct prompts** for security workflows.
+A minimal Codex skill that rewrites vague prompts into **deterministic, phase-correct prompts** for (primarily) bug bounty security workflows.
 
 Enabling operators to get the most "bang-for-their-buck" in terms of tokens and output.
 
