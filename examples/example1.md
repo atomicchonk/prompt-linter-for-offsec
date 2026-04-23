@@ -1,22 +1,26 @@
 # Example 1
-
 ## Original Prompt
-Find vulnerabilities in this app and tell me attack paths.
+
+Find all endpoints on this target.
+
+## Detected Phase
+
+### Recon
 
 ## Hardened Prompt
-Review the observed application details below and identify only issues supported by the evidence provided.
 
-Do not assume authenticated access, hidden endpoints, or successful prior compromise.
+```
+Rewrite only from provided target data. Extract and normalize surface. Do not interpret behavior, prioritize targets, infer workflows, assume auth, or expand scope. Missing data = unknown. Return exactly:
 
-Structure your response into:
-1. Observed facts
-2. Evidence-based inferences
-3. Hypotheses requiring validation
+Surface:
+host | method | path | evidence
 
-For each hypothesis, provide the smallest validation step. If evidence is insufficient, state that clearly.
+Inputs:
+parameter | location | evidence
 
-## What Changed
-- removed vague “find vulns” language
-- prevented assumption of access or compromise
-- enforced structured reasoning
-- added validation-first approach
+Auth Signals:
+signal | evidence
+
+Unknowns:
+item | missing evidence
+```
