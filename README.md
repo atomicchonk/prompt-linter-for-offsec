@@ -6,6 +6,10 @@
 ![Type](https://img.shields.io/badge/Type-Codex%20Skill-purple)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 
+<img width="447" height="280" alt="image" src="https://github.com/user-attachments/assets/ddabee89-c6d0-4718-bead-f0047bb511c3" /> 
+
+---
+
 
 
 
