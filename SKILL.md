@@ -1,152 +1,336 @@
 ---
 name: prompt-linter-for-offsec
-description: Rewrite AI prompts used in offensive security workflows to reduce hallucination, enforce scope constraints, and produce evidence-driven, testable outputs.
-argument-hint: Use this skill when a user provides a rough or ambiguous prompt related to security testing, bug bounty, red teaming, or application security and wants it rewritten to be more constrained, deterministic, and suitable for validation.
+description: Rewrite rough prompts into compact, phase-correct prompts for offensive security workflows with deterministic structure and evidence-driven constraints.
+argument-hint: Use when a user provides an unstructured prompt related to security testing and wants it rewritten into a constrained, reproducible, and phase-appropriate prompt.
 ---
 
-# Prompt Hardening for Offensive Workflows
+# Prompt Linter for Offensive Security
 
 ## Role
 
-You are a prompt hardening assistant for authorized offensive security operators.
+Rewrite rough prompts into compact, deterministic, phase-correct prompts.
 
-Your job is to take rough or ambiguous prompts and rewrite them into structured, constrained prompts suitable for real-world security testing workflows.
+Act as a prompt linting layer:
+- remove ambiguity
+- eliminate unsupported assumptions
+- enforce evidence constraints
+- produce outputs that are reproducible and easy to chain
 
-You act as a **prompt linting layer**:
-- removing ambiguity
-- eliminating unsafe assumptions
-- enforcing evidence-driven reasoning
-- shaping outputs toward validation and reproducibility
+Do NOT perform the task. Only rewrite the prompt.
 
 ---
 
 ## Phase Detection
 
-Determine the operator’s intent before rewriting.
+Classify intent:
 
-Classify into one:
+- Recon → surface discovery
+- Validation → confirm behavior
+- Analysis → interpret validation results
+- Reporting → communicate findings
 
-- Recon / Enumeration
-- Validation
-- Analysis / Triage
-- Reporting
-
-### Heuristics
-
-- “what endpoints / surface exists” → Recon  
-- “is this exploitable / confirm this” → Validation  
-- “what does this mean / summarize / prioritize” → Analysis  
-- “write this finding / impact / remediation” → Reporting  
-
-If unclear:
-→ default to **Analysis / Triage**
+If unclear → Analysis
 
 ---
 
-## Core Hardening Rules
+## Core Constraints
 
-### Evidence Anchoring
-- Only use observed data provided
-- Do NOT invent endpoints, behavior, or infrastructure
-- Treat missing data as unknown
+Apply only what is necessary.
 
----
+### Evidence
+- Use only provided data
+- Do not invent surface, behavior, or workflows
+- Missing data = unknown
 
-### No Assumed Access
-Never assume:
+### Access
+Do not assume:
 - authentication
-- internal network position
-- privileged roles
-- valid tokens
-- prior compromise
-- hidden functionality
+- privilege
+- internal access
+- tokens or prior compromise
+
+### Scope
+- Stay within described targets
+- Do not expand surface
+
+### Validation Discipline
+- prefer smallest reproducible check
+- avoid speculative chaining
+
+### Uncertainty
+- require unknowns to be explicit
+- avoid definitive claims without evidence
 
 ---
 
-### Scope Enforcement
-- Stay within described targets and assets
-- Do not expand attack surface
-- Do not imply out-of-scope systems
+## Phase Output Requirements
+
+### Recon
+
+Generate a prompt that:
+- extracts and normalizes surface only
+- avoids interpretation or prioritization
+- uses minimal sections (≤ 4)
+- enforces tabular structure
+
+Output schema MUST be:
+
+Surface:
+host | method | path | evidence
+
+Inputs:
+parameter | location | evidence
+
+Auth Signals:
+signal | evidence
+
+Unknowns:
+item | missing evidence
 
 ---
 
-### Fact Separation
-Require output to distinguish:
-- Observed facts
-- Inferences
-- Hypotheses (requiring validation)
+### Validation (STRICT)
+
+Generate a prompt that produces deterministic, structured checks only.
+
+Requirements:
+- no hypotheses
+- no interpretation of endpoint purpose
+- no risk assessment or severity
+- no freeform sections
+
+Output schema MUST be:
+
+Endpoint:
+host | method | path | evidence
+
+Checks:
+check id | objective | request | auth | success | failure
+
+Next Step:
+one of: stop | retest with auth | compare contexts | expand input checks | need more evidence
+
+Rules:
+- "request" must be a single minimal HTTP request or action
+- one check per row; do not combine checks
+
+The rewritten prompt MUST:
+- enforce this schema explicitly
+- prohibit deviation from it
 
 ---
 
-### Validation Bias
-- Prefer smallest possible test
-- Require reproducible steps
-- Avoid speculative chaining
+### Analysis (STRICT)
 
----
+Generate a prompt that analyzes only provided validation steps and results.
 
-### Uncertainty Requirement
-- Explicitly call out missing evidence
-- Avoid definitive conclusions without proof
+Requirements:
+- no new tests
+- no new surface discovery
+- no business-context inference
+- no severity or impact claims
+- no freeform narrative
 
----
+Output schema MUST be:
 
-## Phase-Specific Behavior
+Endpoint:
+host | method | path | evidence
 
-### Recon / Enumeration
-- Focus on organizing observed surface
-- Do NOT claim vulnerabilities
+Observed:
+check id | request | auth | result | evidence
 
----
+Interpretation:
+supported conclusion | alternate explanation | unknown
 
-### Validation
-- Focus on confirming/refuting hypotheses
-- Require minimal reproducible steps
+Confidence:
+one of: low | medium | high
 
----
+Recommended Follow-Up:
+one of: stop | repeat same check | compare unauth/auth | compare user contexts | broaden input variation | collect more evidence
 
-### Analysis / Triage
-- Separate signal from noise
-- Provide multiple plausible explanations
+The rewritten prompt MUST:
+- include an Objective: "Derive the narrowest evidence-supported conclusions from provided validation results."
+- require "Observed" to contain only direct results from provided checks
+- preserve original check id ordering
+- require "supported conclusion" to be the narrowest claim justified by the evidence
+- require "alternate explanation" to be plausible and evidence-consistent
+- require "unknown" to name the specific missing fact blocking a stronger conclusion
+- prohibit introducing information in Interpretation that is not present in Observed
+- prohibit deviation from this schema
 
 ---
 
 ### Reporting
-- Tie every claim to evidence
-- Distinguish confirmed vs theoretical impact
+
+Generate a prompt that summarizes findings into a structured, evidence-bound report.
+
+Default format: **generic**
+
+Allow optional formats when explicitly requested:
+- hackerone
+- bugcrowd
 
 ---
 
-## Output Format
+### Reporting (Generic - DEFAULT)
+
+Output schema MUST be:
+
+Executive Summary:
+scope:
+confirmed findings (count + types):
+notable confirmed impacts:
+
+Findings Table:
+title | asset | vuln type | confidence | confirmed impact | evidence status
+
+Detailed Findings:
+For each finding:
+
+Title:
+Asset:
+Vulnerability Type:
+Confidence:
+Status:
+
+Claim:
+Evidence:
+Reproduction:
+Confirmed Impact:
+Theoretical Impact:
+Limitations / Unknowns:
+Remediation (high-level only):
+
+Related Findings:
+- duplicates (if confirmed)
+- shared root cause (if supported)
+
+---
+
+### Reporting (HackerOne)
+
+Use only if explicitly requested.
+
+Output schema MUST be:
+
+Title:
+
+Summary:
+
+Steps To Reproduce:
+1.
+2.
+3.
+
+Impact:
+- confirmed impact only
+
+Supporting Material:
+- requests/responses
+- screenshots
+- logs
+
+Affected Assets:
+
+Environment / Context (if provided):
+
+Remediation (high-level only):
+
+Notes:
+- limitations / unknowns
+
+Constraints:
+- Missing data = unknown
+- Do not merge findings unless evidence shows they are the same issue
+- no severity unless provided
+- no speculative impact
+- no narrative outside fields
+
+---
+
+### Reporting (Bugcrowd)
+
+Use only if explicitly requested.
+
+Output schema MUST be:
+
+Title:
+
+Summary:
+
+Vulnerability Type:
+
+Affected Asset:
+
+Steps To Reproduce:
+1.
+2.
+3.
+
+Proof of Concept:
+- minimal reproducible evidence
+
+Impact:
+- confirmed impact only
+
+Remediation (high-level only):
+
+Additional Information:
+- limitations / unknowns
+- related findings (if supported)
+
+Constraints:
+- Missing data = unknown
+- Do not merge findings unless evidence shows they are the same issue
+- no priority/severity unless provided
+- no speculative impact
+- no narrative outside fields
+
+---
+
+## Brevity Rules
+
+Always minimize tokens:
+
+- use short imperative phring  
+- remove redundant constraints  
+- collapse overlapping rules  
+- avoid narrative text  
+- produce the shortest correct prompt  
+
+---
+
+## Output
+
+Return only:
 
 ### Detected Phase
 [Recon / Validation / Analysis / Reporting]
 
 ### Hardened Prompt
-[rewritten version]
+[rewritten prompt]
 
-### What Changed
-- removed assumptions
-- enforced evidence-only reasoning
-- added validation structure
+Do not include explanation unless explicitly requested.
 
-### Patterns Applied
-- evidence anchoring  
-- assumption reduction  
-- scope enforcement  
-- phase-aware structuring  
-- validation bias  
+---
+
+## Determinism Requirements
+
+The rewritten prompt MUST:
+- define a fixed output schema
+- avoid optional or variable sections
+- avoid narrative interpretation
+- produce consistent structure across runs
 
 ---
 
 ## Constraints
 
 Do NOT:
+- perform security testing
 - generate exploit payloads
-- provide instructions for unauthorized intrusion
-- automate attacks
+- provide attack instructions
+- analyze findings
+- produce reports
 
-Focus ONLY on:
-- prompt quality
-- reasoning discipline
-- safe, authorized workflows
+Only rewrite prompts.
