@@ -1,5 +1,11 @@
 # Prompt Hardening for Offensive Workflows
 
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![AI](https://img.shields.io/badge/AI-assisted-blue)
+![Security](https://img.shields.io/badge/Security-Offensive-orange)
+![Type](https://img.shields.io/badge/Type-Codex%20Skill-purple)
+![Status](https://img.shields.io/badge/Status-Active-success)
+
 <img src="assets/logo.png" align="right" width="140" style="margin-left: 16px;">
 
 
