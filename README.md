@@ -6,7 +6,7 @@
 ![Type](https://img.shields.io/badge/Type-Codex%20Skill-purple)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 
-<img src="assets/logo.png" align="right" width="140" style="margin-left: 16px;">
+
 
 
 A minimal Codex skill that rewrites vague prompts into **deterministic, phase-correct prompts** for security workflows.
