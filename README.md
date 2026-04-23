@@ -1,4 +1,4 @@
-# Prompt Hardening for Offensive Workflows
+# Prompt Linter for Offensive Security
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![AI](https://img.shields.io/badge/AI-assisted-blue)
@@ -9,146 +9,110 @@
 <img src="assets/logo.png" align="right" width="140" style="margin-left: 16px;">
 
 
-A Codex Skill that rewrites rough AI prompts used in authorized offensive security workflows to reduce hallucination, constrain assumptions, and keep outputs grounded in observed evidence.
+A minimal Codex skill that rewrites vague prompts into **deterministic, phase-correct prompts** for security workflows.
 
-> A prompt “linting” layer for AI-assisted security workflows.
-
----
-
-## Why this exists
-
-AI is increasingly used in offensive security workflows, but most prompts are:
-
-* too vague
-* overly assumptive
-* prone to hallucinated conclusions
-* not structured for validation
-
-This leads to:
-
-* false positives
-* wasted time
-* misleading analysis
-* overconfident outputs
-
-This project helps operators **engineer their prompts**, not just write them.
+Enabling operators to get the most "bang-for-their-buck" in terms of tokens and output.
 
 ---
 
 ## What it does
 
-Given a rough prompt, this skill rewrites it to:
+* Detects the phase: **Recon, Validation, Analysis, Reporting**
+* Rewrites your prompt into a **structured, constrained version**
+* Enforces:
 
-* anchor on observed evidence
-* prevent assumed authentication or access
-* separate facts from inferences and speculation
-* enforce scope and authorization constraints
-* bias toward minimal, testable validation steps
-* require uncertainty to be stated clearly
+  * evidence-only reasoning
+  * strict scope
+  * reproducible outputs
+  * fixed schemas
 
 ---
 
-## Phase-Aware Hardening (v2)
+## Why use it
 
-This version introduces **automatic phase detection** and adjusts prompt hardening based on the operator’s intent.
+AI in offsec tends to:
 
-The skill infers the testing phase and applies targeted constraints:
+* hallucinate endpoints or behavior
+* assume access or context
+* mix multiple tasks into one step
 
-### Recon / Enumeration
+This fixes that by forcing **clean, single-purpose prompts**.
 
-* focuses on surface discovery and organization
-* avoids premature vulnerability claims
-* prioritizes structure and visibility gaps
+---
 
-### Validation
+## Phases
 
-* focuses on confirming or refuting hypotheses
-* enforces minimal, reproducible test steps
-* avoids assumptions of success
+| Phase      | Purpose           |
+| ---------- | ----------------- |
+| Recon      | Extract surface   |
+| Validation | Confirm behavior  |
+| Analysis   | Interpret results |
+| Reporting  | Present findings  |
 
-### Analysis / Triage
-
-* separates signal from noise
-* enforces strict fact vs inference boundaries
-* highlights uncertainty and alternative explanations
-
-### Reporting
-
-* ensures claims are backed by evidence
-* distinguishes confirmed impact from theoretical risk
-* produces concise, defensible outputs
-
-If the phase is unclear, the skill defaults to **Analysis / Triage**.
+Each phase outputs a **strict schema** (no freeform text).
 
 ---
 
 ## Example
 
-### Before
+**Input**
 
-What can I do with these endpoints?
+```
+enumerate endpoints and test for issues
+```
 
-### After
+**Output**
 
-Using only the observed endpoints, parameters, and responses provided below, identify plausible security testing directions for an authorized assessment. Do not assume additional routes, authenticated functionality, internal access, or business logic not directly evidenced.
+```
+Detected Phase
+Recon
 
-Group your answer into:
+Hardened Prompt
+Extract and normalize only provided surface. No assumptions. Return:
 
-1. Observed attack surface
-2. Likely validation targets
-3. Assumptions requiring confirmation
-
-Prioritize concise, testable next steps and clearly state any uncertainty.
-
----
-
-## Best used for
-
-* Bug bounty workflows
-* Internal authorized testing
-* Recon triage
-* Web/API analysis
-* Findings validation
-* Note cleanup
+Surface:
+host | method | path | evidence
+```
 
 ---
 
-## Not for
+## Reporting formats
 
-* Unauthorized testing
-* Exploit automation
-* Payload generation against real targets
+Default: **generic**
 
----
+Optional:
 
-## Usage
-
-Provide:
-
-* your rough prompt
-* context (optional)
-* observed evidence (optional)
-
-The skill returns:
-
-* detected testing phase
-* a hardened prompt
-* a short explanation of improvements
+* `HackerOne`
+* `Bugcrowd`
 
 ---
 
-## Philosophy
+## Design principles
 
-> AI should assist operators, not mislead them.
-
-This project focuses on:
-
-* signal over noise
-* validation over speculation
-* control over convenience
+* **Deterministic** → same structure every time
+* **Evidence-first** → no guessing
+* **Minimal** → no extra sections
+* **Composable** → outputs chain cleanly
 
 ---
 
-## License
+## What this is NOT
 
-MIT
+* not a scanner
+* not a vuln finder
+* not an agent framework
+
+It only:
+
+> rewrites prompts so AI behaves predictably
+
+---
+
+## TL;DR
+
+* one skill
+* one job
+* no hallucinations
+* clean outputs
+
+Use it when your prompts are messy and your results aren’t reliable.
