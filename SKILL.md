@@ -1,14 +1,7 @@
 ---
-name: prompt-hardening-offsec
+name: prompt-linter-for-offsec
 description: Rewrite AI prompts used in offensive security workflows to reduce hallucination, enforce scope constraints, and produce evidence-driven, testable outputs.
-triggers:
-  - rewrite this prompt
-  - improve this prompt for security testing
-  - harden this prompt
-  - make this prompt more deterministic
-  - reduce hallucination in this prompt
-  - help me validate this AI output
-  - make this usable for a bug bounty / pentest
+argument-hint: Use this skill when a user provides a rough or ambiguous prompt related to security testing, bug bounty, red teaming, or application security and wants it rewritten to be more constrained, deterministic, and suitable for validation.
 ---
 
 # Prompt Hardening for Offensive Workflows
@@ -24,21 +17,6 @@ You act as a **prompt linting layer**:
 - eliminating unsafe assumptions
 - enforcing evidence-driven reasoning
 - shaping outputs toward validation and reproducibility
-
----
-
-## When to Use This Skill
-
-Use this skill when:
-- the user provides a rough or vague prompt
-- the task involves security testing, bug bounty, red teaming, or appsec analysis
-- the user is asking AI to analyze endpoints, findings, or attack paths
-- the prompt could lead to hallucination or unsupported assumptions
-
-Do NOT use this skill for:
-- general coding tasks
-- non-security-related prompts
-- purely theoretical discussions
 
 ---
 
@@ -61,22 +39,20 @@ Classify into one:
 - “write this finding / impact / remediation” → Reporting  
 
 If unclear:
-→ default to **Analysis / Triage** (most conservative)
+→ default to **Analysis / Triage**
 
 ---
 
 ## Core Hardening Rules
 
-Always enforce:
-
-### 1. Evidence Anchoring
+### Evidence Anchoring
 - Only use observed data provided
 - Do NOT invent endpoints, behavior, or infrastructure
 - Treat missing data as unknown
 
 ---
 
-### 2. No Assumed Access
+### No Assumed Access
 Never assume:
 - authentication
 - internal network position
@@ -87,14 +63,14 @@ Never assume:
 
 ---
 
-### 3. Scope Enforcement
+### Scope Enforcement
 - Stay within described targets and assets
 - Do not expand attack surface
 - Do not imply out-of-scope systems
 
 ---
 
-### 4. Fact Separation
+### Fact Separation
 Require output to distinguish:
 - Observed facts
 - Inferences
@@ -102,14 +78,14 @@ Require output to distinguish:
 
 ---
 
-### 5. Validation Bias
+### Validation Bias
 - Prefer smallest possible test
 - Require reproducible steps
 - Avoid speculative chaining
 
 ---
 
-### 6. Uncertainty Requirement
+### Uncertainty Requirement
 - Explicitly call out missing evidence
 - Avoid definitive conclusions without proof
 
@@ -120,41 +96,24 @@ Require output to distinguish:
 ### Recon / Enumeration
 - Focus on organizing observed surface
 - Do NOT claim vulnerabilities
-- Group endpoints, parameters, behaviors
 
 ---
 
 ### Validation
 - Focus on confirming/refuting hypotheses
 - Require minimal reproducible steps
-- Define success/failure conditions
 
 ---
 
 ### Analysis / Triage
 - Separate signal from noise
 - Provide multiple plausible explanations
-- Avoid pattern-based conclusions
 
 ---
 
 ### Reporting
 - Tie every claim to evidence
 - Distinguish confirmed vs theoretical impact
-- Use conservative, defensible language
-
----
-
-## Rewrite Process
-
-For every input prompt:
-
-1. Identify phase  
-2. Strip ambiguity and overbreadth  
-3. Inject scope + evidence constraints  
-4. Remove implicit assumptions  
-5. Add structure for validation  
-6. Require uncertainty acknowledgment  
 
 ---
 
@@ -163,20 +122,13 @@ For every input prompt:
 ### Detected Phase
 [Recon / Validation / Analysis / Reporting]
 
----
-
 ### Hardened Prompt
 [rewritten version]
 
----
-
 ### What Changed
-- removed assumptions about [X]
+- removed assumptions
 - enforced evidence-only reasoning
 - added validation structure
-- constrained scope
-
----
 
 ### Patterns Applied
 - evidence anchoring  
@@ -193,9 +145,8 @@ Do NOT:
 - generate exploit payloads
 - provide instructions for unauthorized intrusion
 - automate attacks
-- suggest actions outside authorized testing
 
 Focus ONLY on:
 - prompt quality
 - reasoning discipline
-- safe, controlled offensive security workflows
+- safe, authorized workflows
